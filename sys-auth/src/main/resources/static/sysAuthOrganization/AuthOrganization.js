@@ -66,19 +66,18 @@ AuthOrganization.loadData = function(obj, action, curpage) {
  * */
 AuthOrganization.add = function() {
 
-    var List = [];
+    var clickNode = $('#authOrganizationTree').treeview('getSelected');
 
-    List.push($('#authOrganizationTree').treeview('getSelected')[0].id);
-
-    if(List.length === 0){
+    if(clickNode.length === 0){
         BootstrapDialog.alert({
             type: BootstrapDialog.TYPE_WARNING,
             title: '提示',
-            message: '请选择一条数据',
+            message: '请选择一个组织',
             buttonLabel: "确定"
         });
-    }else{
-        AuthOrganization.addCommon();
+    } else{
+        console.log(clickNode)
+        AuthOrganization.addCommon(clickNode[0].id);
     }
 
 }
@@ -87,12 +86,13 @@ AuthOrganization.add = function() {
 /**
  * 表格头部添加通用方法
  */
-AuthOrganization.addCommon = function() {
+AuthOrganization.addCommon = function(uid) {
 
-    var dialogInfo = AuthOrganization.getHtmlInfo(AuthOrganization.ctxPath + AuthOrganization.url + 'add.html', {});
+    var dialogInfo = AuthOrganization.getHtmlInfo(AuthOrganization.ctxPath + AuthOrganization.url + 'add.html', {parentId:  uid});
     BootstrapDialog.show({
         title: '添加部门',
         closable: true,
+        type: BootstrapDialog.TYPE_DEFAULT,
         closeByBackdrop: false,
         closeByKeyboard: false,
         size: BootstrapDialog.SIZE_NORMAL,
@@ -127,6 +127,7 @@ AuthOrganization.addModel = function() {
         closable: true,
         closeByBackdrop: false,
         closeByKeyboard: false,
+        type: BootstrapDialog.TYPE_DEFAULT,
         size: BootstrapDialog.SIZE_NORMAL,
         message: dialogInfo,
         buttons: [{
@@ -233,6 +234,7 @@ AuthOrganization.editCommon = function(uid) {
         closable: true,
         closeByBackdrop: false,
         closeByKeyboard: false,
+        type: BootstrapDialog.TYPE_DEFAULT,
         size: BootstrapDialog.SIZE_NORMAL,
         message: dialogInfo,
         buttons: [{
@@ -356,15 +358,15 @@ AuthOrganization.setDictItem = function() {
     }
 
     var dialogInfo = AuthOrganization.getHtmlInfo(AuthOrganization.ctxPath + 'auth/sysauthpost/' + 'dictitem/list/'+ arrays[0] + '.html', {"curpage" : 1});
-    console.log(dialogInfo);
+
     BootstrapDialog.show({
-        type: BootstrapDialog.TYPE_PRIMARY,
+        type: BootstrapDialog.TYPE_DEFAULT,
         title: '分配岗位',
         closable: true,
         closeByBackdrop: false,
         closeByKeyboard: false,
         size: BootstrapDialog.SIZE_WIDE,
-        message: "<div id='item-list'>" + dialogInfo + "</div><script src='"+treeUrl+"' type='text/javascript'></script><script>AuthActionTree.checkboxStyle();</script><style>"+style+"</style>"
+        message: "<div id='item-list'>" + dialogInfo + "</div>"
     });
 };
 
@@ -389,22 +391,6 @@ AuthOrganization.checkboxInit = function() {
         $(this).data("clicks", !clicks);
     });
 };
-
-AuthOrganization.getActionSelectParent = function () {
-    var id = [];
-
-    id.push($('#authOrganizationTree').treeview('getSelected')[0].id);
-
-    $.ajax({
-        type: "POST",
-        url: AuthOrganization.ctxPath + AuthOrganization.url + "list/"+id[0]+".do",
-        dataType: "json",
-        data:{},
-        success: function (data) {
-            $("#ActionSelectParent").attr("value", data.results.id);
-        }
-    });
-}
 
 
 /**
@@ -585,64 +571,17 @@ AuthOrganization.checkPermissionTree = function(){
 
 AuthOrganization.TreeNode = function () {
 
-    $.ajax({
-        type: "POST",
-        url: AuthOrganization.ctxPath + AuthOrganization.url + "organizationTree.do",
-        data: { },
-        dataType: "json",
-        success: function (data) {
-            var treeList = [];
-            $.each(data,function (k,v) {
-                var treeNode={};
-
-                treeNode["text"] = v.name;
-                treeNode["id"] = v.id;
-                treeNode["nodes"] = [];
-                $.each(v.children,function (k,v) {
-                    var childrenNode = {};
-                    childrenNode["text"] = v.name;
-                    childrenNode["id"] = v.id;
-                    treeNode["nodes"].push(childrenNode);
-                    if(v.children.length !== 0){
-                        $.each(v.children,function (k,v) {
-                            var childrensNode = {};
-                            childrensNode["text"] = v.name;
-                            childrensNode["id"] = v.id;
-                            childrenNode["nodes"].push(childrensNode);
-                        });
-                    }
-                })
-                treeList.push(treeNode);
-
-            })
-            $('#authOrganizationTree').treeview({
-                data: treeList,
-                showBorder: false,
-                selectedBackColor: '#3e3e3e',
-                /*selectedBackColor: '#fff',*/
-               /* onhoverColor: '#fff',*/
-                selectedColor: '#fff',
-                showCheckbox: false,
-                onNodeChecked: function(event, node){
-                    var selectNodes = AuthOrganization.getChildrenTree(node);
-                    if(selectNodes){
-                        $('#treeview-checkable').treeview('checkNode', [ selectNodes,{ silent: true }]);
-                    }
-                },
-                onNodeUnchecked: function (event, node) {
-                    var selectNodes = AuthOrganization.getChildrenTree(node);
-                    if(selectNodes){
-                        $('#treeview-checkable').treeview('uncheckNode', [ selectNodes,{ silent: true }]);
-                    }
-                }
-            });
-        }
+    var node = $("#authOrganizationTree").bsTableBuild({
+        uid: 'NONE',
+        url: AuthOrganization.ctxPath + AuthOrganization.url + "tree.do"
     });
+
+    AuthOrganization.node = node;
 }
 
 
 
-// noinspection JSAnnotator
+
 /**
  * 左侧树状图选中数据获取
  */
@@ -674,10 +613,17 @@ function treeClick(e){
     AuthOrganization.local(e);
 }
 
+function treeEnter(e){
+
+}
+
+function treeLeave(e){
+
+}
+
 AuthOrganization.local = function(e){
     parentId = $(e).attr("id");
 
-    console.log(parentId);
     $.ajax({
         type: 'get',
         url: AuthOrganization.ctxPath + AuthOrganization.url + "local/"+1+".html",
@@ -686,7 +632,7 @@ AuthOrganization.local = function(e){
         success: function(data){
             data += "<script>AuthOrganization.checkboxInit();</script>";
             $(".box-footer").remove();
-            $(".col-xs-10").css("display","none").html(data).fadeIn(200);
+            $("#data-list-content-list").css("display","none").html(data).fadeIn(200);
         }
     });
 }
@@ -714,6 +660,5 @@ AuthOrganization.checkCommon = function(){
 
 $(function () {
     AuthOrganization.checkboxInit();
-    AuthOrganization.TreeNode();
     AuthOrganization.checkPermissionTree();
 });

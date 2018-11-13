@@ -15,13 +15,16 @@
             <input type="text" name="name" class="form-control" value="${obj.name!}" placeholder="名称" required="">
         </div>
         <div class="form-group">
-            <label>上级部门</label><label style="color: red;" id="msg-parentId"></label>
-            <input type="text" value="${obj.parentId!}" name="parentId" id="ActionSelectParent" class="form-control" readonly="readonly">
+            <div class="input-box">
+                <label>上级部门</label><label style="color: red;" id="msg-parentId"></label>
+                <input type="hidden" value="${obj.parentId!}" name="parentId" id="ActionSelectParent" class="form-control input-point" readonly="readonly">
+                <div class="inputVal" id="model-icon" >${parentName!}</i></div>
+            </div>
         </div>
-        <div class="form-group">
-            <label>排序</label><label style="color: red;" id="msg-sort"></label>
-            <input type="text" name="sort" class="form-control" value="${obj.sort!}" placeholder="名称" required="">
-        </div>
+        <!--<div class="form-group">-->
+            <!--<label>排序</label><label style="color: red;" id="msg-sort"></label>-->
+            <!--<input type="text" name="sort" class="form-control" value="" placeholder="名称" required="">-->
+        <!--</div>-->
         <div class="form-group">
             <label>类型</label><label id="msg-type" style="color: red;"></label>
             <select class="form-control" name="type">
@@ -38,8 +41,3 @@
         </div>
     </form>
 </div>
-<script src="${ctxPath}/static/sysAuthOrganization/AuthOrganization.js"></script>
-<script>
-    AuthOrganization.getActionSelectParent();
-   /* AuthOrganization.click();*/
-</script>

@@ -312,7 +312,7 @@ AuthActionTree.distribution = function() {
         closeByBackdrop: false,
         closeByKeyboard: false,
         size: BootstrapDialog.SIZE_WIDE,
-        message: "<div id='item-list'>" + dialogInfo + "</div><script>AuthActionTree.ItemCheckboxInit();</script>"
+        message: "<div id='item-list'>" + dialogInfo + "</div><script>AuthActionTree.ItemCheckboxInit()</script>"
     });
 };
 
@@ -463,8 +463,12 @@ AuthActionTree.checkboxStyle = function() {
  */
 
 AuthActionTree.TreeNode = function () {
-    console.log("2")
-    node = TreeView.tree("NONE", "#authActionTree", AuthActionTree.ctxPath+AuthActionTree.url+"tree.do");
+    var node = $("#authActionTree").bsTableBuild({
+        uid: 'NONE',
+        url: AuthActionTree.ctxPath+AuthActionTree.url+"tree.do",
+        selectedBackColor: "none",
+        selectedColor: '#333'
+    });
     AuthActionTree.node = node;
 }
 
@@ -539,7 +543,10 @@ AuthActionTree.treeNodeMove = function(e, status){
             if("NONE" === data.parentId){
                 AuthActionTree.TreeNode();
             }else{
-                TreeView.treeNode(TreeView.node, "#authActionTree", AuthActionTree.ctxPath+AuthActionTree.url+"tree.do");
+                $.treeNode({
+                    dom: $("#authActionTree"),
+                    url: AuthActionTree.ctxPath+AuthActionTree.url+"tree.do"
+                });
             }
         }else{
 
@@ -560,8 +567,11 @@ AuthActionTree.unClick = function(e){
 }
 
 
+var treeLeave = function(e){
+
+}
+
 
 $(function () {
     AuthActionTree.checkboxInit();
-    AuthActionTree.TreeNode();
 });

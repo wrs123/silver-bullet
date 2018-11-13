@@ -364,21 +364,21 @@ AuthPost.setDictItem = function() {
 };
 
 AuthPost.checkboxInit = function() {
-    $('#data-list-content input[type="checkbox"]').iCheck({
+    $('#item-list input[type="checkbox"]').iCheck({
         checkboxClass: 'icheckbox_flat-blue',
         radioClass: 'iradio_flat-blue'
     });
 
     //Enable check and uncheck all functionality
-    $("#data-list-content .checkbox-toggle").click(function () {
+    $("#item-list .checkbox-toggle").click(function () {
         var clicks = $(this).data('clicks');
         if (clicks) {
             //Uncheck all checkboxes
-            $("#data-list-content input[type='checkbox']").iCheck("uncheck");
+            $("#item-list input[type='checkbox']").iCheck("uncheck");
             $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
         } else {
             //Check all checkboxes
-            $("#data-list-content input[type='checkbox']").iCheck("check");
+            $("#item-list input[type='checkbox']").iCheck("check");
             $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
         }
         $(this).data("clicks", !clicks);
@@ -762,6 +762,6 @@ AuthPost.checkCommon = function(){
 
 
 $(function () {
-    AuthPost.checkboxInit();
+
     /* AuthPost.TreeChildren();*/     //定位到当树
 });

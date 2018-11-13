@@ -6,9 +6,9 @@
         <small>浏览</small>
     </h1>
     <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-        <li><a href="#">Tables</a></li>
-        <li class="active">Data tables</li>
+        <li><a href="#"><i class="fa fa-dashboard"></i>Silver Bullet</a></li>
+        <li><a href="#">系统管理</a></li>
+        <li class="active">权限管理</li>
     </ol>
 </section>
 
@@ -19,7 +19,7 @@
                 <div id="data-list-content-tree" class="col-md-3">
                     @include("/SysAuthActionTree/tree.html"){}
                 </div>
-                <div id="data-list-content-list" class="col-xs-9">
+                <div id="data-list-content-list" class="col-md-9">
                     @include("/SysAuthActionTree/listContent.html"){}
                 </div>
                 <!-- /.col -->
@@ -29,6 +29,9 @@
     </div>
 </div>
 <script src="${ctxPath}/static/sysAuthActionTree/AuthActionTree.js"></script>
+<script>
+    AuthActionTree.TreeNode();
+</script>
 </body>
 </html>
 
